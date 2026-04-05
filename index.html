@@ -81,6 +81,20 @@
     opacity: 0.8;
     font-weight: 300;
   }
+  .header-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: #F6D7CE;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(246,215,206,0.45);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .header-link:hover {
+    color: #FFFFFF;
+    border-color: rgba(255,255,255,0.85);
+  }
 
   /* === PROGRESS === */
   .progress-wrap {
@@ -457,8 +471,9 @@
 
 <div class="header">
   <div class="header-icon">🛡️</div>
-  <h1>학교폭력 실태조사</h1>
+  <h1>충주상업고등학교 학교폭력 실태조사</h1>
   <p>2025년 2학기 ~ 현재 | 실명 실태조사</p>
+  <a class="header-link" href="https://www.instagram.com/ccs_safety/" target="_blank" rel="noopener noreferrer">충주상업고등학교 생활안전부</a>
 </div>
 
 <div class="progress-wrap">
@@ -496,7 +511,7 @@
       <div class="field-error" id="err-studentId">학번을 입력해주세요.</div>
 
       <label class="field-label">학교 이름 <span class="req">*</span></label>
-      <input type="text" id="schoolName" value="OO상업고등학교" placeholder="예: ○○중학교, ○○고등학교">
+      <input type="text" id="schoolName" value="충주상업고등학교" placeholder="예: ○○중학교, ○○고등학교">
       <div class="field-error" id="err-schoolName">학교 이름을 입력해주세요.</div>
 
       <label class="field-label">학년 <span class="req">*</span></label>
