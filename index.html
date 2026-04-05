@@ -458,7 +458,7 @@
 <div class="header">
   <div class="header-icon">🛡️</div>
   <h1>학교폭력 실태조사</h1>
-  <p>2025년 2학기 ~ 현재 | 익명 설문</p>
+  <p>2025년 2학기 ~ 현재 | 실명 실태조사</p>
 </div>
 
 <div class="progress-wrap">
@@ -480,12 +480,20 @@
     <div class="card">
       <div class="step-number"><span>1</span> 기본 정보</div>
       <h2>응답자 정보</h2>
-      <p class="desc">본 설문은 익명으로 진행되며, 수집된 정보는 학교폭력 예방 목적으로만 사용됩니다.</p>
+      <p class="desc">본 설문은 실명으로 진행되며, 수집된 정보는 학교폭력 실태 파악 및 사안 처리 목적으로만 사용됩니다.</p>
 
       <div class="notice">
-        <div class="notice-icon">🔒</div>
-        <div>모든 응답은 <strong>익명</strong>으로 처리됩니다. 솔직하게 답변해 주세요.</div>
+        <div class="notice-icon">📝</div>
+        <div>본 조사는 <strong>실명 조사</strong>입니다. 학번과 이름을 정확히 기입해 주세요.</div>
       </div>
+
+      <label class="field-label">이름 <span class="req">*</span></label>
+      <input type="text" id="studentName" placeholder="예: 홍길동">
+      <div class="field-error" id="err-studentName">이름을 입력해주세요.</div>
+
+      <label class="field-label">학번 <span class="req">*</span></label>
+      <input type="text" id="studentId" placeholder="예: 10312 (학년+반+번호)">
+      <div class="field-error" id="err-studentId">학번을 입력해주세요.</div>
 
       <label class="field-label">학교 이름 <span class="req">*</span></label>
       <input type="text" id="schoolName" placeholder="예: ○○중학교, ○○고등학교">
@@ -785,25 +793,107 @@ function updateProgress() {
 // ===== TOGGLE =====
 function toggleSection(id, show) {
   const el = document.getElementById(id);
-  if (show) el.classList.add('show');
-  else el.classList.remove('show');
+  if (show) {
+    el.classList.add('show');
+    return;
+  }
+  el.classList.remove('show');
+  clearSectionFields(el);
+}
+
+function clearSectionFields(container) {
+  container.querySelectorAll('input, select, textarea').forEach((field) => {
+    if (field.type === 'checkbox' || field.type === 'radio') {
+      field.checked = false;
+      return;
+    }
+    field.value = '';
+  });
+}
+
+function getCheckedCount(prefix, count) {
+  let checked = 0;
+  for (let i = 1; i <= count; i++) {
+    const cb = document.getElementById(prefix + i);
+    if (cb && cb.checked) checked++;
+  }
+  return checked;
 }
 
 // ===== VALIDATION =====
 function validateStep(step) {
-  let ok = true;
   if (step === 1) {
-    ok = showErr('schoolName', !document.getElementById('schoolName').value.trim()) && ok ? true : false;
-    ok = showErr('grade', !document.getElementById('grade').value) && ok ? true : false;
-    // Actually let's fix the logic
+    const name = document.getElementById('studentName').value.trim();
+    const sid = document.getElementById('studentId').value.trim();
     const s = document.getElementById('schoolName').value.trim();
     const g = document.getElementById('grade').value;
     let valid = true;
+    if (!name) { document.getElementById('err-studentName').classList.add('show'); valid = false; }
+    else { document.getElementById('err-studentName').classList.remove('show'); }
+    if (!sid) { document.getElementById('err-studentId').classList.add('show'); valid = false; }
+    else { document.getElementById('err-studentId').classList.remove('show'); }
     if (!s) { document.getElementById('err-schoolName').classList.add('show'); valid = false; }
     else { document.getElementById('err-schoolName').classList.remove('show'); }
     if (!g) { document.getElementById('err-grade').classList.add('show'); valid = false; }
     else { document.getElementById('err-grade').classList.remove('show'); }
     return valid;
+  }
+
+  if (step === 2) {
+    const victimYN = getRadioVal('victim');
+    if (!victimYN) {
+      alert('피해 경험 여부를 선택해주세요.');
+      return false;
+    }
+    if (victimYN === '예') {
+      if (!getCheckedCount('vt', 7)) {
+        alert('피해 폭력 유형을 1개 이상 선택해주세요.');
+        return false;
+      }
+      if (!getRadioVal('victimStatus')) {
+        alert('피해 사안 처리 상태를 선택해주세요.');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (step === 3) {
+    const bullyYN = getRadioVal('bully');
+    if (!bullyYN) {
+      alert('가해 경험 여부를 선택해주세요.');
+      return false;
+    }
+    if (bullyYN === '예') {
+      if (!getCheckedCount('bt', 7)) {
+        alert('가해 유형을 1개 이상 선택해주세요.');
+        return false;
+      }
+      if (!getRadioVal('bullyStatus')) {
+        alert('가해 사안 처리 상태를 선택해주세요.');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (step === 4) {
+    const witnessYN = getRadioVal('witness');
+    if (!witnessYN) {
+      alert('목격 경험 여부를 선택해주세요.');
+      return false;
+    }
+    if (witnessYN === '예') {
+      if (!getCheckedCount('wt', 7)) {
+        alert('목격한 폭력 유형을 1개 이상 선택해주세요.');
+        return false;
+      }
+      if (!getRadioVal('witnessAction')) {
+        alert('목격 후 행동을 선택해주세요.');
+        return false;
+      }
+    }
+    return true;
   }
   return true;
 }
@@ -827,36 +917,42 @@ function getCheckboxVals(prefix, count) {
 }
 
 function collectData() {
+  const victimYN = getRadioVal('victim');
+  const bullyYN = getRadioVal('bully');
+  const witnessYN = getRadioVal('witness');
+
   return {
     timestamp: new Date().toLocaleString('ko-KR'),
+    studentName: document.getElementById('studentName').value.trim(),
+    studentId: document.getElementById('studentId').value.trim(),
     schoolName: document.getElementById('schoolName').value.trim(),
     grade: document.getElementById('grade').value,
     classNum: document.getElementById('classNum').value.trim(),
     gender: getRadioVal('gender'),
     // 피해
-    victimYN: getRadioVal('victim'),
-    victimTypes: getCheckboxVals('vt', 7),
-    victimPerp: document.getElementById('victimPerp').value.trim(),
-    victimPlace: document.getElementById('victimPlace').value.trim(),
-    victimStatus: getRadioVal('victimStatus'),
-    victimWhyNot: document.getElementById('victimWhyNot').value.trim(),
-    victimExtra: document.getElementById('victimExtra').value.trim(),
+    victimYN,
+    victimTypes: victimYN === '예' ? getCheckboxVals('vt', 7) : '',
+    victimPerp: victimYN === '예' ? document.getElementById('victimPerp').value.trim() : '',
+    victimPlace: victimYN === '예' ? document.getElementById('victimPlace').value.trim() : '',
+    victimStatus: victimYN === '예' ? getRadioVal('victimStatus') : '',
+    victimWhyNot: victimYN === '예' ? document.getElementById('victimWhyNot').value.trim() : '',
+    victimExtra: victimYN === '예' ? document.getElementById('victimExtra').value.trim() : '',
     // 가해
-    bullyYN: getRadioVal('bully'),
-    bullyTypes: getCheckboxVals('bt', 7),
-    bullyVictim: document.getElementById('bullyVictim').value.trim(),
-    bullyStatus: getRadioVal('bullyStatus'),
-    bullyReason: document.getElementById('bullyReason').value.trim(),
-    bullyExtra: document.getElementById('bullyExtra').value.trim(),
+    bullyYN,
+    bullyTypes: bullyYN === '예' ? getCheckboxVals('bt', 7) : '',
+    bullyVictim: bullyYN === '예' ? document.getElementById('bullyVictim').value.trim() : '',
+    bullyStatus: bullyYN === '예' ? getRadioVal('bullyStatus') : '',
+    bullyReason: bullyYN === '예' ? document.getElementById('bullyReason').value.trim() : '',
+    bullyExtra: bullyYN === '예' ? document.getElementById('bullyExtra').value.trim() : '',
     // 목격
-    witnessYN: getRadioVal('witness'),
-    witnessTypes: getCheckboxVals('wt', 7),
-    witnessVictim: document.getElementById('witnessVictim').value.trim(),
-    witnessPerp: document.getElementById('witnessPerp').value.trim(),
-    witnessPlace: document.getElementById('witnessPlace').value.trim(),
-    witnessAction: getRadioVal('witnessAction'),
-    witnessStatus: getRadioVal('witnessStatus'),
-    witnessExtra: document.getElementById('witnessExtra').value.trim()
+    witnessYN,
+    witnessTypes: witnessYN === '예' ? getCheckboxVals('wt', 7) : '',
+    witnessVictim: witnessYN === '예' ? document.getElementById('witnessVictim').value.trim() : '',
+    witnessPerp: witnessYN === '예' ? document.getElementById('witnessPerp').value.trim() : '',
+    witnessPlace: witnessYN === '예' ? document.getElementById('witnessPlace').value.trim() : '',
+    witnessAction: witnessYN === '예' ? getRadioVal('witnessAction') : '',
+    witnessStatus: witnessYN === '예' ? getRadioVal('witnessStatus') : '',
+    witnessExtra: witnessYN === '예' ? document.getElementById('witnessExtra').value.trim() : ''
   };
 }
 
@@ -866,6 +962,7 @@ function buildReview() {
   let html = '<div style="font-size:13px;line-height:1.8;">';
   html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;margin-bottom:10px;">';
   html += '<strong>📌 기본정보</strong><br>';
+  html += '이름: ' + d.studentName + ' | 학번: ' + d.studentId + '<br>';
   html += '학교: ' + d.schoolName + ' | 학년: ' + d.grade;
   if (d.classNum) html += ' | 반: ' + d.classNum;
   if (d.gender) html += ' | 성별: ' + d.gender;
@@ -902,6 +999,11 @@ function buildReview() {
 // ===== SUBMIT =====
 async function submitForm() {
   const btn = document.getElementById('submitBtn');
+  if (!validateStep(4)) return;
+  if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+    alert('Google Apps Script URL이 아직 설정되지 않았습니다. index.html의 GOOGLE_SCRIPT_URL 값을 먼저 교체해주세요.');
+    return;
+  }
   btn.disabled = true;
   document.getElementById('loadingOverlay').classList.add('show');
 
