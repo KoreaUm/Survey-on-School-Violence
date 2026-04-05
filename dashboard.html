@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학교폭력 실태조사 — 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F1923;
+    --surface: #182633;
+    --surface2: #1E3044;
+    --border: #2A3F52;
+    --text: #E8ECF1;
+    --text-dim: #7C8FA3;
+    --accent: #3EAFF7;
+    --red: #F25C54;
+    --red-bg: rgba(242,92,84,0.12);
+    --orange: #F2994A;
+    --orange-bg: rgba(242,153,74,0.12);
+    --yellow: #F2C94C;
+    --yellow-bg: rgba(242,201,76,0.12);
+    --green: #27AE60;
+    --green-bg: rgba(39,174,96,0.12);
+    --purple: #BB6BD9;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* === TOPBAR === */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+  }
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .topbar-logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .topbar h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .topbar h1 span {
+    color: var(--text-dim);
+    font-weight: 400;
+    font-size: 13px;
+    margin-left: 8px;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; }
+    50% { opacity:0.4; }
+  }
+  .btn-refresh {
+    padding: 8px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .btn-refresh:hover { background: var(--border); }
+
+  /* === GRID === */
+  .dashboard {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .kpi-card .kpi-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  .kpi-card .kpi-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .kpi-card .kpi-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .kpi-card .kpi-pct {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: var(--surface2);
+    border-radius: 20px;
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  /* === BAR CHART === */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bar-item {
+    display: grid;
+    grid-template-columns: 90px 1fr 40px;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  .bar-track {
+    height: 28px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 1s ease;
+    min-width: 2px;
+  }
+  .bar-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* === DONUT === */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    justify-content: center;
+  }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-val {
+    margin-left: auto;
+    font-weight: 600;
+    min-width: 28px;
+    text-align: right;
+  }
+
+  /* === TABLE === */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(42,63,82,0.5);
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .data-table .num { text-align: center; font-weight: 600; }
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-red { background: var(--red-bg); color: var(--red); }
+  .tag-orange { background: var(--orange-bg); color: var(--orange); }
+  .tag-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-green { background: var(--green-bg); color: var(--green); }
+
+  /* === EMPTY STATE === */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  .empty-state h3 { font-size: 16px; margin-bottom: 8px; color: var(--text); }
+  .empty-state p { font-size: 13px; }
+
+  /* === LOADING === */
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    gap: 16px;
+  }
+  .load-spinner {
+    width: 32px; height: 32px;
+    border: 2.5px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* === SETUP BANNER === */
+  .setup-banner {
+    background: linear-gradient(135deg, rgba(62,175,247,0.1), rgba(187,107,217,0.1));
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+  }
+  .setup-banner h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .setup-banner p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+  .setup-banner code {
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--yellow);
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .dashboard { padding: 16px; }
+  }
+  @media (max-width: 600px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .topbar { padding: 14px 16px; }
+    .topbar h1 span { display: none; }
+    .donut-wrap { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">🛡️</div>
+    <h1>실태조사 대시보드 <span>2025년 2학기 ~ 현재</span></h1>
+  </div>
+  <div class="topbar-right">
+    <div class="status-dot"></div>
+    <span id="lastUpdated">업데이트 대기중</span>
+    <button class="btn-refresh" onclick="loadData()">↻ 새로고침</button>
+  </div>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <div class="loading-screen" id="loadingScreen">
+    <div class="load-spinner"></div>
+    <div style="font-size:13px;color:var(--text-dim);">데이터를 불러오는 중...</div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+// 아래 URL을 본인의 Google Apps Script 웹앱 URL로 교체하세요 (index.html과 동일한 URL)
+const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+// ===== LOAD DATA =====
+async function loadData() {
+  const dashboard = document.getElementById('dashboard');
+  
+  try {
+    // 데모 모드: URL을 설정하지 않았거나 API 호출 실패시 데모 데이터 사용
+    let data;
+    
+    if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      data = getDemoData();
+      renderDashboard(data, true);
+      return;
+    }
+    
+    const response = await fetch(API_URL + '?action=dashboard');
+    data = await response.json();
+    renderDashboard(data, false);
+    
+  } catch (err) {
+    // API 실패 시 데모 데이터로 표시
+    const data = getDemoData();
+    renderDashboard(data, true);
+  }
+}
+
+function getDemoData() {
+  return {
+    total: 127,
+    victim: 23,
+    bully: 8,
+    witness: 41,
+    none: 68,
+    types: {
+      '신체폭력': 7,
+      '언어폭력': 18,
+      '따돌림': 14,
+      '사이버폭력': 11,
+      '금품갈취': 3,
+      '강요': 5,
+      '성폭력': 2
+    },
+    statuses: {
+      '해결됨': 6,
+      '진행중': 5,
+      '신고못함': 9,
+      '신고했으나 처리안됨': 3
+    },
+    schools: {
+      '○○중학교': { total: 45, victim: 9, bully: 3, witness: 16 },
+      '△△고등학교': { total: 38, victim: 7, bully: 2, witness: 12 },
+      '□□중학교': { total: 28, victim: 5, bully: 2, witness: 8 },
+      '◇◇고등학교': { total: 16, victim: 2, bully: 1, witness: 5 }
+    },
+    grades: {
+      '중1': { total: 22, victim: 5, bully: 1, witness: 8 },
+      '중2': { total: 28, victim: 6, bully: 2, witness: 10 },
+      '중3': { total: 18, victim: 4, bully: 1, witness: 7 },
+      '고1': { total: 25, victim: 3, bully: 2, witness: 8 },
+      '고2': { total: 20, victim: 3, bully: 1, witness: 5 },
+      '고3': { total: 14, victim: 2, bully: 1, witness: 3 }
+    },
+    lastUpdated: new Date().toLocaleString('ko-KR')
+  };
+}
+
+// ===== RENDER =====
+function renderDashboard(data, isDemo) {
+  const dashboard = document.getElementById('dashboard');
+  document.getElementById('lastUpdated').textContent = data.lastUpdated || '방금 전';
+  
+  const total = data.total || 0;
+  const pct = (n) => total ? Math.round((n/total)*100) : 0;
+  
+  let html = '';
+  
+  // 데모 모드 안내
+  if (isDemo) {
+    html += `
+      <div class="setup-banner">
+        <h3>⚡ 데모 모드로 실행 중</h3>
+        <p>
+          실제 데이터를 연결하려면 <code>dashboard.html</code> 파일의<br>
+          <code>API_URL</code> 값을 본인의 Google Apps Script 웹앱 URL로 교체하세요.<br>
+          아래는 예시 데이터로 표시된 대시보드입니다.
+        </p>
+      </div>
+    `;
+  }
+  
+  // KPI CARDS
+  html += `
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:rgba(62,175,247,0.15);">📋</div>
+        <div class="kpi-label">총 응답 수</div>
+        <div class="kpi-value" style="color:var(--accent);">${total}</div>
+        <div class="kpi-pct">전체 참여자</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--red-bg);">🔴</div>
+        <div class="kpi-label">피해 경험</div>
+        <div class="kpi-value" style="color:var(--red);">${data.victim}</div>
+        <div class="kpi-pct">${pct(data.victim)}% 응답</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--orange-bg);">🟠</div>
+        <div class="kpi-label">가해 경험</div>
+        <div class="kpi-value" style="color:var(--orange);">${data.bully}</div>
+        <div class="kpi-pct">${pct(data.bully)}% 응답</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--yellow-bg);">🟡</div>
+        <div class="kpi-label">목격 경험</div>
+        <div class="kpi-value" style="color:var(--yellow);">${data.witness}</div>
+        <div class="kpi-pct">${pct(data.witness)}% 응답</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--green-bg);">✅</div>
+        <div class="kpi-label">경험 없음</div>
+        <div class="kpi-value" style="color:var(--green);">${data.none}</div>
+        <div class="kpi-pct">${pct(data.none)}% 응답</div>
+      </div>
+    </div>
+  `;
+  
+  // CHARTS ROW 1: 유형별 + 처리상태
+  const types = data.types || {};
+  const maxType = Math.max(...Object.values(types), 1);
+  const typeColors = {
+    '신체폭력': '#F25C54',
+    '언어폭력': '#F2994A',
+    '따돌림': '#F2C94C',
+    '사이버폭력': '#3EAFF7',
+    '금품갈취': '#BB6BD9',
+    '강요': '#EB5757',
+    '성폭력': '#E05297'
+  };
+  
+  let typeBars = '';
+  Object.entries(types)
+    .sort((a,b) => b[1] - a[1])
+    .forEach(([name, count]) => {
+      const w = (count / maxType) * 100;
+      const color = typeColors[name] || 'var(--accent)';
+      typeBars += `
+        <div class="bar-item">
+          <div class="bar-label">${name}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${w}%;background:${color};"></div>
+          </div>
+          <div class="bar-count">${count}</div>
+        </div>
+      `;
+    });
+  
+  // Donut chart
+  const statuses = data.statuses || {};
+  const statusColors = {
+    '해결됨': '#27AE60',
+    '진행중': '#F2C94C',
+    '신고못함': '#F25C54',
+    '신고했으나 처리안됨': '#BB6BD9'
+  };
+  const statusTotal = Object.values(statuses).reduce((a,b) => a+b, 0) || 1;
+  
+  let donutSegments = '';
+  let donutLegend = '';
+  let offset = 0;
+  Object.entries(statuses).forEach(([name, count]) => {
+    const pctVal = (count / statusTotal) * 100;
+    const dashArr = `${pctVal} ${100 - pctVal}`;
+    const color = statusColors[name] || '#666';
+    donutSegments += `<circle cx="50" cy="50" r="40" fill="none" stroke="${color}" stroke-width="16" 
+      stroke-dasharray="${dashArr}" stroke-dashoffset="${-offset}" opacity="0.85"/>`;
+    offset += pctVal;
+    donutLegend += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${color};"></div>
+        <span>${name}</span>
+        <span class="legend-val">${count}</span>
+      </div>
+    `;
+  });
+  
+  html += `
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">🔴 피해 유형별 현황 <span class="badge">복수응답</span></div>
+        <div class="bar-chart">${typeBars}</div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖️ 피해 처리상태</div>
+        <div class="donut-wrap">
+          <svg class="donut-svg" width="160" height="160" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16"/>
+            ${donutSegments}
+            <text x="50" y="46" text-anchor="middle" font-size="14" font-weight="700" fill="var(--text)">${statusTotal}</text>
+            <text x="50" y="58" text-anchor="middle" font-size="6" fill="var(--text-dim)">건</text>
+          </svg>
+          <div class="donut-legend">${donutLegend}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // CHARTS ROW 2: 학교별 + 학년별
+  const schools = data.schools || {};
+  const grades = data.grades || {};
+  
+  let schoolRows = '';
+  Object.entries(schools)
+    .sort((a,b) => b[1].total - a[1].total)
+    .forEach(([name, s]) => {
+      schoolRows += `
+        <tr>
+          <td style="font-weight:500;">${name}</td>
+          <td class="num">${s.total}</td>
+          <td class="num">${s.victim ? `<span class="tag tag-red">${s.victim}</span>` : '-'}</td>
+          <td class="num">${s.bully ? `<span class="tag tag-orange">${s.bully}</span>` : '-'}</td>
+          <td class="num">${s.witness ? `<span class="tag tag-yellow">${s.witness}</span>` : '-'}</td>
+        </tr>
+      `;
+    });
+  
+  // Grade bar chart
+  const gradeOrder = ['중1','중2','중3','고1','고2','고3'];
+  const maxGrade = Math.max(...Object.values(grades).map(g => g.total), 1);
+  let gradeBars = '';
+  gradeOrder.forEach(g => {
+    if (!grades[g]) return;
+    const gr = grades[g];
+    const totalW = (gr.total / maxGrade) * 100;
+    const vW = gr.total ? (gr.victim / gr.total) * totalW : 0;
+    const bW = gr.total ? (gr.bully / gr.total) * totalW : 0;
+    const wW = gr.total ? (gr.witness / gr.total) * totalW : 0;
+    const nW = totalW - vW - bW - wW;
+    gradeBars += `
+      <div class="bar-item">
+        <div class="bar-label">${g}</div>
+        <div class="bar-track" style="display:flex;overflow:hidden;">
+          <div style="width:${vW}%;height:100%;background:var(--red);"></div>
+          <div style="width:${bW}%;height:100%;background:var(--orange);"></div>
+          <div style="width:${wW}%;height:100%;background:var(--yellow);"></div>
+          <div style="width:${Math.max(nW,0)}%;height:100%;background:var(--green);opacity:0.5;"></div>
+        </div>
+        <div class="bar-count">${gr.total}</div>
+      </div>
+    `;
+  });
+  
+  html += `
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">🏫 학교별 현황</div>
+        <table class="data-table">
+          <thead>
+            <tr><th>학교</th><th style="text-align:center;">응답</th><th style="text-align:center;">피해</th><th style="text-align:center;">가해</th><th style="text-align:center;">목격</th></tr>
+          </thead>
+          <tbody>${schoolRows || '<tr><td colspan="5" style="text-align:center;color:var(--text-dim);padding:24px;">데이터 없음</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 학년별 분포</div>
+        <div class="bar-chart" style="margin-bottom:20px;">${gradeBars}</div>
+        <div style="display:flex;gap:16px;justify-content:center;font-size:11px;color:var(--text-dim);">
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:4px;"></span>피해</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--orange);border-radius:2px;margin-right:4px;"></span>가해</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--yellow);border-radius:2px;margin-right:4px;"></span>목격</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:var(--green);opacity:0.5;border-radius:2px;margin-right:4px;"></span>없음</span>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // 신고 못한 비율 경고
+  const notReported = (statuses['신고못함'] || 0) + (statuses['신고했으나 처리안됨'] || 0);
+  const notReportedPct = statusTotal > 0 ? Math.round((notReported / statusTotal) * 100) : 0;
+  
+  if (notReportedPct > 0) {
+    html += `
+      <div class="card" style="border-color:var(--red);border-width:1px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="font-size:32px;">⚠️</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:4px;">
+              피해 사례 중 ${notReportedPct}%가 미해결 상태입니다
+            </div>
+            <div style="font-size:13px;color:var(--text-dim);">
+              신고하지 못했거나 신고 후에도 처리되지 않은 사례가 ${notReported}건 있습니다.
+              즉각적인 관심과 조치가 필요합니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  dashboard.innerHTML = html;
+}
+
+// ===== INIT =====
+loadData();
+</script>
+</body>
+</html>
