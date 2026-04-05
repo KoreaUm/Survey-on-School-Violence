@@ -507,27 +507,12 @@
       <div class="field-error" id="err-studentName">이름을 입력해주세요.</div>
 
       <label class="field-label">학번 <span class="req">*</span></label>
-      <input type="text" id="studentId" placeholder="예: 1101 (학년+반+번호)">
+      <input type="text" id="studentId" placeholder="예: 10312 (학년+반+번호)">
       <div class="field-error" id="err-studentId">학번을 입력해주세요.</div>
 
       <label class="field-label">학교 이름 <span class="req">*</span></label>
       <input type="text" id="schoolName" value="충주상업고등학교" placeholder="예: ○○중학교, ○○고등학교">
       <div class="field-error" id="err-schoolName">학교 이름을 입력해주세요.</div>
-
-      <label class="field-label">학년 <span class="req">*</span></label>
-      <select id="grade">
-        <option value="">선택해주세요</option>
-        <option value="중1">중학교 1학년</option>
-        <option value="중2">중학교 2학년</option>
-        <option value="중3">중학교 3학년</option>
-        <option value="고1">고등학교 1학년</option>
-        <option value="고2">고등학교 2학년</option>
-        <option value="고3">고등학교 3학년</option>
-      </select>
-      <div class="field-error" id="err-grade">학년을 선택해주세요.</div>
-
-      <label class="field-label">반</label>
-      <input type="text" id="classNum" placeholder="예: 3반">
 
       <label class="field-label">성별</label>
       <div class="option-group">
@@ -871,7 +856,6 @@ function validateStep(step) {
     const name = document.getElementById('studentName').value.trim();
     const sid = document.getElementById('studentId').value.trim();
     const s = document.getElementById('schoolName').value.trim();
-    const g = document.getElementById('grade').value;
     let valid = true;
     if (!name) { document.getElementById('err-studentName').classList.add('show'); valid = false; }
     else { document.getElementById('err-studentName').classList.remove('show'); }
@@ -879,8 +863,6 @@ function validateStep(step) {
     else { document.getElementById('err-studentId').classList.remove('show'); }
     if (!s) { document.getElementById('err-schoolName').classList.add('show'); valid = false; }
     else { document.getElementById('err-schoolName').classList.remove('show'); }
-    if (!g) { document.getElementById('err-grade').classList.add('show'); valid = false; }
-    else { document.getElementById('err-grade').classList.remove('show'); }
     return valid;
   }
 
@@ -983,8 +965,6 @@ function collectData() {
     studentName: document.getElementById('studentName').value.trim(),
     studentId: document.getElementById('studentId').value.trim(),
     schoolName: document.getElementById('schoolName').value.trim(),
-    grade: document.getElementById('grade').value,
-    classNum: document.getElementById('classNum').value.trim(),
     gender: getRadioVal('gender'),
     // 피해
     victimYN,
@@ -1023,8 +1003,7 @@ function buildReview() {
   html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;margin-bottom:10px;">';
   html += '<strong>📌 기본정보</strong><br>';
   html += '이름: ' + d.studentName + ' | 학번: ' + d.studentId + '<br>';
-  html += '학교: ' + d.schoolName + ' | 학년: ' + d.grade;
-  if (d.classNum) html += ' | 반: ' + d.classNum;
+  html += '학교: ' + d.schoolName;
   if (d.gender) html += ' | 성별: ' + d.gender;
   html += '</div>';
 
