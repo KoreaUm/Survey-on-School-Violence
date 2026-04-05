@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>학교폭력 실태조사</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --primary: #1B3A5C;
+    --accent: #D4563A;
+    --accent-light: #F2E0DA;
+    --text: #2C2C2C;
+    --text-light: #6B7280;
+    --border: #E2DFD8;
+    --success: #2D8F5E;
+    --success-light: #E8F5EE;
+    --warning: #E6A817;
+    --warning-light: #FFF8E1;
+    --shadow: 0 2px 12px rgba(27,58,92,0.06);
+    --radius: 12px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* === HEADER === */
+  .header {
+    background: var(--primary);
+    color: white;
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(212,86,58,0.15);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .header h1 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 14px;
+    opacity: 0.8;
+    font-weight: 300;
+  }
+
+  /* === PROGRESS === */
+  .progress-wrap {
+    max-width: 640px;
+    margin: -20px auto 0;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .progress-bar-bg {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 16px 20px;
+    box-shadow: var(--shadow);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* === CONTAINER === */
+  .container {
+    max-width: 640px;
+    margin: 24px auto;
+    padding: 0 20px 40px;
+  }
+
+  /* === STEP CARD === */
+  .step {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .step.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+
+  .step-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .step-number span {
+    background: var(--accent-light);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .card h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--primary);
+  }
+  .card .desc {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* === FORM ELEMENTS === */
+  label.field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  label.field-label .req {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #FAFAF8;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 18px;
+    color: var(--text);
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(27,58,92,0.08);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* Radio / Checkbox groups */
+  .option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .option-item {
+    position: relative;
+  }
+  .option-item input {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .option-item label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    background: #FAFAF8;
+  }
+  .option-item label:hover {
+    border-color: var(--primary);
+    background: white;
+  }
+  .option-item input:checked + label {
+    border-color: var(--primary);
+    background: rgba(27,58,92,0.04);
+    font-weight: 500;
+  }
+  .option-item label .dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .option-item input:checked + label .dot {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+  .option-item input:checked + label .dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+  /* checkbox style */
+  .option-item label .box {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .option-item input:checked + label .box {
+    border-color: var(--primary);
+    background: var(--primary);
+  }
+  .option-item input:checked + label .box::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* === CONDITIONAL SECTIONS === */
+  .conditional {
+    display: none;
+    margin-top: 4px;
+    padding: 20px;
+    background: #F9F8F5;
+    border-radius: 10px;
+    border-left: 3px solid var(--accent);
+    margin-bottom: 18px;
+    animation: fadeUp 0.3s ease;
+  }
+  .conditional.show { display: block; }
+  .conditional label.field-label { font-size: 13px; }
+  .conditional input, .conditional select, .conditional textarea {
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  /* === BUTTONS === */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-prev {
+    background: var(--border);
+    color: var(--text-light);
+  }
+  .btn-prev:hover { background: #d5d2cb; }
+  .btn-next {
+    background: var(--primary);
+    color: white;
+  }
+  .btn-next:hover { background: #15304d; transform: translateY(-1px); }
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-submit:hover { background: #c04830; transform: translateY(-1px); }
+  .btn-submit:disabled {
+    background: var(--border);
+    color: var(--text-light);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* === NOTICE === */
+  .notice {
+    display: flex;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--warning-light);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #8B6914;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .notice-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* === COMPLETE === */
+  .complete-screen {
+    text-align: center;
+    padding: 60px 24px;
+  }
+  .complete-icon {
+    width: 80px; height: 80px;
+    background: var(--success-light);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 20px;
+    animation: scaleIn 0.5s ease;
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+  .complete-screen h2 {
+    font-size: 22px;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .complete-screen p {
+    color: var(--text-light);
+    font-size: 14px;
+  }
+
+  /* === ERROR === */
+  .field-error {
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: -14px;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  /* === FOOTER === */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--text-light);
+  }
+
+  /* === LOADING OVERLAY === */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(247,245,240,0.9);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 480px) {
+    .header { padding: 36px 16px 44px; }
+    .header h1 { font-size: 22px; }
+    .card { padding: 24px 20px; }
+    .btn-row { flex-direction: column-reverse; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🛡️</div>
+  <h1>학교폭력 실태조사</h1>
+  <p>2025년 2학기 ~ 현재 | 익명 설문</p>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-label">
+      <span id="progressText">시작하기</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ========== STEP 1: 기본정보 ========== -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="step-number"><span>1</span> 기본 정보</div>
+      <h2>응답자 정보</h2>
+      <p class="desc">본 설문은 익명으로 진행되며, 수집된 정보는 학교폭력 예방 목적으로만 사용됩니다.</p>
+
+      <div class="notice">
+        <div class="notice-icon">🔒</div>
+        <div>모든 응답은 <strong>익명</strong>으로 처리됩니다. 솔직하게 답변해 주세요.</div>
+      </div>
+
+      <label class="field-label">학교 이름 <span class="req">*</span></label>
+      <input type="text" id="schoolName" placeholder="예: ○○중학교, ○○고등학교">
+      <div class="field-error" id="err-schoolName">학교 이름을 입력해주세요.</div>
+
+      <label class="field-label">학년 <span class="req">*</span></label>
+      <select id="grade">
+        <option value="">선택해주세요</option>
+        <option value="중1">중학교 1학년</option>
+        <option value="중2">중학교 2학년</option>
+        <option value="중3">중학교 3학년</option>
+        <option value="고1">고등학교 1학년</option>
+        <option value="고2">고등학교 2학년</option>
+        <option value="고3">고등학교 3학년</option>
+      </select>
+      <div class="field-error" id="err-grade">학년을 선택해주세요.</div>
+
+      <label class="field-label">반</label>
+      <input type="text" id="classNum" placeholder="예: 3반">
+
+      <label class="field-label">성별</label>
+      <div class="option-group">
+        <div class="option-item">
+          <input type="radio" name="gender" id="g-m" value="남">
+          <label for="g-m"><span class="dot"></span>남자</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="gender" id="g-f" value="여">
+          <label for="g-f"><span class="dot"></span>여자</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="gender" id="g-x" value="응답하지 않음">
+          <label for="g-x"><span class="dot"></span>응답하지 않음</label>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-next" onclick="goStep(2)">다음으로 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 2: 피해 경험 ========== -->
+  <div class="step" id="step2">
+    <div class="card">
+      <div class="step-number"><span>2</span> 피해 경험</div>
+      <h2>학교폭력 피해를 당한 적이 있나요?</h2>
+      <p class="desc">2025년 2학기(9월)부터 현재까지의 경험을 응답해 주세요.</p>
+
+      <div class="option-group">
+        <div class="option-item">
+          <input type="radio" name="victim" id="v-y" value="예" onchange="toggleSection('victimDetail',true)">
+          <label for="v-y"><span class="dot"></span>예, 피해 경험이 있습니다</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="victim" id="v-n" value="아니오" onchange="toggleSection('victimDetail',false)">
+          <label for="v-n"><span class="dot"></span>아니오, 없습니다</label>
+        </div>
+      </div>
+
+      <div class="conditional" id="victimDetail">
+        <label class="field-label">폭력 유형 (복수 선택 가능) <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="checkbox" id="vt1" value="신체폭력"><label for="vt1"><span class="box"></span>신체폭력 (때리기, 밀치기 등)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt2" value="언어폭력"><label for="vt2"><span class="box"></span>언어폭력 (욕설, 협박, 모욕 등)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt3" value="따돌림"><label for="vt3"><span class="box"></span>따돌림 (왕따, 무시, 배제 등)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt4" value="사이버폭력"><label for="vt4"><span class="box"></span>사이버폭력 (SNS, 단톡방 등)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt5" value="금품갈취"><label for="vt5"><span class="box"></span>금품갈취 (돈, 물건 빼앗기 등)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt6" value="강요"><label for="vt6"><span class="box"></span>강요 (억지 심부름, 원하지 않는 행동 강요)</label></div>
+          <div class="option-item"><input type="checkbox" id="vt7" value="성폭력"><label for="vt7"><span class="box"></span>성폭력·성희롱</label></div>
+        </div>
+
+        <label class="field-label">가해자 정보 (알고 있다면)</label>
+        <input type="text" id="victimPerp" placeholder="학교, 학년, 이름 또는 특징 (예: ○○학교 2학년 김○○)">
+
+        <label class="field-label">피해 장소</label>
+        <input type="text" id="victimPlace" placeholder="예: 교실, 복도, 화장실, 온라인 등">
+
+        <label class="field-label">현재 사안 처리 상태 <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="radio" name="victimStatus" id="vs1" value="해결됨"><label for="vs1"><span class="dot"></span>해결되었습니다</label></div>
+          <div class="option-item"><input type="radio" name="victimStatus" id="vs2" value="진행중"><label for="vs2"><span class="dot"></span>현재 진행 중입니다</label></div>
+          <div class="option-item"><input type="radio" name="victimStatus" id="vs3" value="신고못함"><label for="vs3"><span class="dot"></span>신고하지 못했습니다</label></div>
+          <div class="option-item"><input type="radio" name="victimStatus" id="vs4" value="신고했으나 처리안됨"><label for="vs4"><span class="dot"></span>신고했지만 처리되지 않았습니다</label></div>
+        </div>
+
+        <label class="field-label">신고하지 못한 이유 (해당하는 경우)</label>
+        <textarea id="victimWhyNot" placeholder="신고하지 못한 이유나 어려움을 적어주세요"></textarea>
+
+        <label class="field-label">추가로 하고 싶은 말</label>
+        <textarea id="victimExtra" placeholder="자유롭게 적어주세요"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="goStep(1)">← 이전</button>
+        <button class="btn btn-next" onclick="goStep(3)">다음으로 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 3: 가해 경험 ========== -->
+  <div class="step" id="step3">
+    <div class="card">
+      <div class="step-number"><span>3</span> 가해 경험</div>
+      <h2>학교폭력 가해를 한 적이 있나요?</h2>
+      <p class="desc">솔직한 응답이 학교폭력 예방에 큰 도움이 됩니다.</p>
+
+      <div class="option-group">
+        <div class="option-item">
+          <input type="radio" name="bully" id="b-y" value="예" onchange="toggleSection('bullyDetail',true)">
+          <label for="b-y"><span class="dot"></span>예, 가해 경험이 있습니다</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="bully" id="b-n" value="아니오" onchange="toggleSection('bullyDetail',false)">
+          <label for="b-n"><span class="dot"></span>아니오, 없습니다</label>
+        </div>
+      </div>
+
+      <div class="conditional" id="bullyDetail">
+        <label class="field-label">어떤 유형이었나요? (복수 선택 가능) <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="checkbox" id="bt1" value="신체폭력"><label for="bt1"><span class="box"></span>신체폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="bt2" value="언어폭력"><label for="bt2"><span class="box"></span>언어폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="bt3" value="따돌림"><label for="bt3"><span class="box"></span>따돌림</label></div>
+          <div class="option-item"><input type="checkbox" id="bt4" value="사이버폭력"><label for="bt4"><span class="box"></span>사이버폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="bt5" value="금품갈취"><label for="bt5"><span class="box"></span>금품갈취</label></div>
+          <div class="option-item"><input type="checkbox" id="bt6" value="강요"><label for="bt6"><span class="box"></span>강요</label></div>
+          <div class="option-item"><input type="checkbox" id="bt7" value="성폭력"><label for="bt7"><span class="box"></span>성폭력·성희롱</label></div>
+        </div>
+
+        <label class="field-label">피해자 정보 (알고 있다면)</label>
+        <input type="text" id="bullyVictim" placeholder="학교, 학년, 이름 또는 특징">
+
+        <label class="field-label">현재 사안 처리 상태 <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="radio" name="bullyStatus" id="bs1" value="해결됨"><label for="bs1"><span class="dot"></span>해결되었습니다</label></div>
+          <div class="option-item"><input type="radio" name="bullyStatus" id="bs2" value="진행중"><label for="bs2"><span class="dot"></span>현재 진행 중입니다</label></div>
+          <div class="option-item"><input type="radio" name="bullyStatus" id="bs3" value="알려지지않음"><label for="bs3"><span class="dot"></span>아직 알려지지 않았습니다</label></div>
+        </div>
+
+        <label class="field-label">가해 이유</label>
+        <textarea id="bullyReason" placeholder="어떤 상황이었는지 적어주세요"></textarea>
+
+        <label class="field-label">추가로 하고 싶은 말</label>
+        <textarea id="bullyExtra" placeholder="자유롭게 적어주세요"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="goStep(2)">← 이전</button>
+        <button class="btn btn-next" onclick="goStep(4)">다음으로 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 4: 목격 경험 ========== -->
+  <div class="step" id="step4">
+    <div class="card">
+      <div class="step-number"><span>4</span> 목격 경험</div>
+      <h2>학교폭력을 목격한 적이 있나요?</h2>
+      <p class="desc">주변에서 학교폭력을 본 경험이 있다면 알려주세요.</p>
+
+      <div class="option-group">
+        <div class="option-item">
+          <input type="radio" name="witness" id="w-y" value="예" onchange="toggleSection('witnessDetail',true)">
+          <label for="w-y"><span class="dot"></span>예, 목격한 적 있습니다</label>
+        </div>
+        <div class="option-item">
+          <input type="radio" name="witness" id="w-n" value="아니오" onchange="toggleSection('witnessDetail',false)">
+          <label for="w-n"><span class="dot"></span>아니오, 없습니다</label>
+        </div>
+      </div>
+
+      <div class="conditional" id="witnessDetail">
+        <label class="field-label">어떤 유형이었나요? (복수 선택 가능) <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="checkbox" id="wt1" value="신체폭력"><label for="wt1"><span class="box"></span>신체폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="wt2" value="언어폭력"><label for="wt2"><span class="box"></span>언어폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="wt3" value="따돌림"><label for="wt3"><span class="box"></span>따돌림</label></div>
+          <div class="option-item"><input type="checkbox" id="wt4" value="사이버폭력"><label for="wt4"><span class="box"></span>사이버폭력</label></div>
+          <div class="option-item"><input type="checkbox" id="wt5" value="금품갈취"><label for="wt5"><span class="box"></span>금품갈취</label></div>
+          <div class="option-item"><input type="checkbox" id="wt6" value="강요"><label for="wt6"><span class="box"></span>강요</label></div>
+          <div class="option-item"><input type="checkbox" id="wt7" value="성폭력"><label for="wt7"><span class="box"></span>성폭력·성희롱</label></div>
+        </div>
+
+        <label class="field-label">피해자 정보 (알고 있다면)</label>
+        <input type="text" id="witnessVictim" placeholder="학교, 학년, 이름 또는 특징">
+
+        <label class="field-label">가해자 정보 (알고 있다면)</label>
+        <input type="text" id="witnessPerp" placeholder="학교, 학년, 이름 또는 특징">
+
+        <label class="field-label">목격 장소</label>
+        <input type="text" id="witnessPlace" placeholder="예: 교실, 운동장, 온라인 등">
+
+        <label class="field-label">목격 후 어떻게 했나요? <span class="req">*</span></label>
+        <div class="option-group">
+          <div class="option-item"><input type="radio" name="witnessAction" id="wa1" value="선생님 신고"><label for="wa1"><span class="dot"></span>선생님이나 학교에 알렸습니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessAction" id="wa2" value="부모님 알림"><label for="wa2"><span class="dot"></span>부모님께 알렸습니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessAction" id="wa3" value="직접 말림"><label for="wa3"><span class="dot"></span>직접 말리거나 도와줬습니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessAction" id="wa4" value="아무것도 안함"><label for="wa4"><span class="dot"></span>아무것도 하지 못했습니다</label></div>
+        </div>
+
+        <label class="field-label">현재 사안 처리 상태</label>
+        <div class="option-group">
+          <div class="option-item"><input type="radio" name="witnessStatus" id="wss1" value="해결됨"><label for="wss1"><span class="dot"></span>해결되었습니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessStatus" id="wss2" value="진행중"><label for="wss2"><span class="dot"></span>현재 진행 중입니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessStatus" id="wss3" value="모름"><label for="wss3"><span class="dot"></span>잘 모르겠습니다</label></div>
+          <div class="option-item"><input type="radio" name="witnessStatus" id="wss4" value="신고안됨"><label for="wss4"><span class="dot"></span>신고되지 않은 것 같습니다</label></div>
+        </div>
+
+        <label class="field-label">추가로 하고 싶은 말</label>
+        <textarea id="witnessExtra" placeholder="자유롭게 적어주세요"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="goStep(3)">← 이전</button>
+        <button class="btn btn-next" onclick="goStep(5)">다음으로 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STEP 5: 제출 ========== -->
+  <div class="step" id="step5">
+    <div class="card">
+      <div class="step-number"><span>5</span> 제출</div>
+      <h2>응답을 확인하고 제출해주세요</h2>
+      <p class="desc">제출 후에는 수정할 수 없습니다. 응답 내용을 확인해 주세요.</p>
+
+      <div id="reviewSummary" style="margin-bottom:20px;"></div>
+
+      <div class="notice">
+        <div class="notice-icon">📋</div>
+        <div>제출된 응답은 구글 스프레드시트에 안전하게 저장됩니다.</div>
+      </div>
+
+      <button class="btn-submit" id="submitBtn" onclick="submitForm()">📨 설문 제출하기</button>
+
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn btn-prev" onclick="goStep(4)">← 이전으로 돌아가기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COMPLETE ========== -->
+  <div class="step" id="stepComplete">
+    <div class="card complete-screen">
+      <div class="complete-icon">✅</div>
+      <h2>설문이 제출되었습니다</h2>
+      <p>소중한 응답 감사합니다.<br>학교폭력 없는 학교를 만드는 데 큰 도움이 됩니다.</p>
+      <div style="margin-top:24px; padding:16px; background:var(--warning-light); border-radius:8px; font-size:13px; color:#8B6914;">
+        💡 학교폭력으로 어려움을 겪고 있다면<br>
+        <strong>학교폭력 신고센터 ☎ 117</strong>로 전화해주세요.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-size:14px;color:var(--text-light);">제출 중입니다...</div>
+</div>
+
+<div class="footer">
+  학교폭력 실태조사 | 2025년 2학기 ~ 현재<br>
+  도움이 필요하면 학교폭력 신고센터 ☎ 117
+</div>
+
+<script>
+// ===== CONFIG =====
+// 아래 URL을 본인의 Google Apps Script 웹앱 URL로 교체하세요
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8kWbyQkckv0vdirww17XAUvRQtEa1WrLnloV-Li-z5Nr16IPN1zMc_JtRstLOESKw/exec';
+
+let currentStep = 1;
+const totalSteps = 5;
+
+// ===== NAVIGATION =====
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  document.getElementById('step' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step' + currentStep).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (n === 5) buildReview();
+}
+
+function updateProgress() {
+  const pct = Math.round(((currentStep - 1) / (totalSteps - 1)) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPercent').textContent = pct + '%';
+  const labels = ['시작하기', '피해 경험', '가해 경험', '목격 경험', '제출 확인'];
+  document.getElementById('progressText').textContent = labels[currentStep - 1] || '';
+}
+
+// ===== TOGGLE =====
+function toggleSection(id, show) {
+  const el = document.getElementById(id);
+  if (show) el.classList.add('show');
+  else el.classList.remove('show');
+}
+
+// ===== VALIDATION =====
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    ok = showErr('schoolName', !document.getElementById('schoolName').value.trim()) && ok ? true : false;
+    ok = showErr('grade', !document.getElementById('grade').value) && ok ? true : false;
+    // Actually let's fix the logic
+    const s = document.getElementById('schoolName').value.trim();
+    const g = document.getElementById('grade').value;
+    let valid = true;
+    if (!s) { document.getElementById('err-schoolName').classList.add('show'); valid = false; }
+    else { document.getElementById('err-schoolName').classList.remove('show'); }
+    if (!g) { document.getElementById('err-grade').classList.add('show'); valid = false; }
+    else { document.getElementById('err-grade').classList.remove('show'); }
+    return valid;
+  }
+  return true;
+}
+function showErr(id, isErr) {
+  // helper kept for potential future use
+  return !isErr;
+}
+
+// ===== COLLECT DATA =====
+function getRadioVal(name) {
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : '';
+}
+function getCheckboxVals(prefix, count) {
+  const vals = [];
+  for (let i = 1; i <= count; i++) {
+    const cb = document.getElementById(prefix + i);
+    if (cb && cb.checked) vals.push(cb.value);
+  }
+  return vals.join(', ');
+}
+
+function collectData() {
+  return {
+    timestamp: new Date().toLocaleString('ko-KR'),
+    schoolName: document.getElementById('schoolName').value.trim(),
+    grade: document.getElementById('grade').value,
+    classNum: document.getElementById('classNum').value.trim(),
+    gender: getRadioVal('gender'),
+    // 피해
+    victimYN: getRadioVal('victim'),
+    victimTypes: getCheckboxVals('vt', 7),
+    victimPerp: document.getElementById('victimPerp').value.trim(),
+    victimPlace: document.getElementById('victimPlace').value.trim(),
+    victimStatus: getRadioVal('victimStatus'),
+    victimWhyNot: document.getElementById('victimWhyNot').value.trim(),
+    victimExtra: document.getElementById('victimExtra').value.trim(),
+    // 가해
+    bullyYN: getRadioVal('bully'),
+    bullyTypes: getCheckboxVals('bt', 7),
+    bullyVictim: document.getElementById('bullyVictim').value.trim(),
+    bullyStatus: getRadioVal('bullyStatus'),
+    bullyReason: document.getElementById('bullyReason').value.trim(),
+    bullyExtra: document.getElementById('bullyExtra').value.trim(),
+    // 목격
+    witnessYN: getRadioVal('witness'),
+    witnessTypes: getCheckboxVals('wt', 7),
+    witnessVictim: document.getElementById('witnessVictim').value.trim(),
+    witnessPerp: document.getElementById('witnessPerp').value.trim(),
+    witnessPlace: document.getElementById('witnessPlace').value.trim(),
+    witnessAction: getRadioVal('witnessAction'),
+    witnessStatus: getRadioVal('witnessStatus'),
+    witnessExtra: document.getElementById('witnessExtra').value.trim()
+  };
+}
+
+// ===== REVIEW =====
+function buildReview() {
+  const d = collectData();
+  let html = '<div style="font-size:13px;line-height:1.8;">';
+  html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;margin-bottom:10px;">';
+  html += '<strong>📌 기본정보</strong><br>';
+  html += '학교: ' + d.schoolName + ' | 학년: ' + d.grade;
+  if (d.classNum) html += ' | 반: ' + d.classNum;
+  if (d.gender) html += ' | 성별: ' + d.gender;
+  html += '</div>';
+
+  html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;margin-bottom:10px;">';
+  html += '<strong>🔴 피해 경험:</strong> ' + (d.victimYN || '미응답');
+  if (d.victimYN === '예') {
+    html += '<br>유형: ' + (d.victimTypes || '미선택');
+    html += '<br>처리 상태: ' + (d.victimStatus || '미선택');
+  }
+  html += '</div>';
+
+  html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;margin-bottom:10px;">';
+  html += '<strong>🟠 가해 경험:</strong> ' + (d.bullyYN || '미응답');
+  if (d.bullyYN === '예') {
+    html += '<br>유형: ' + (d.bullyTypes || '미선택');
+    html += '<br>처리 상태: ' + (d.bullyStatus || '미선택');
+  }
+  html += '</div>';
+
+  html += '<div style="padding:12px 14px;background:#F4F3EF;border-radius:8px;">';
+  html += '<strong>🟡 목격 경험:</strong> ' + (d.witnessYN || '미응답');
+  if (d.witnessYN === '예') {
+    html += '<br>유형: ' + (d.witnessTypes || '미선택');
+    html += '<br>목격 후 행동: ' + (d.witnessAction || '미선택');
+  }
+  html += '</div>';
+
+  html += '</div>';
+  document.getElementById('reviewSummary').innerHTML = html;
+}
+
+// ===== SUBMIT =====
+async function submitForm() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  document.getElementById('loadingOverlay').classList.add('show');
+
+  const data = collectData();
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    document.getElementById('loadingOverlay').classList.remove('show');
+    document.getElementById('step5').classList.remove('active');
+    document.getElementById('stepComplete').classList.add('active');
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressPercent').textContent = '100%';
+    document.getElementById('progressText').textContent = '제출 완료';
+  } catch (err) {
+    document.getElementById('loadingOverlay').classList.remove('show');
+    alert('제출 중 오류가 발생했습니다. 다시 시도해주세요.\n\n오류: ' + err.message);
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>
