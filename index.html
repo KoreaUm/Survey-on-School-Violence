@@ -492,11 +492,11 @@
       <div class="field-error" id="err-studentName">이름을 입력해주세요.</div>
 
       <label class="field-label">학번 <span class="req">*</span></label>
-      <input type="text" id="studentId" placeholder="예: 10312 (학년+반+번호)">
+      <input type="text" id="studentId" placeholder="예: 1101 (학년+반+번호)">
       <div class="field-error" id="err-studentId">학번을 입력해주세요.</div>
 
       <label class="field-label">학교 이름 <span class="req">*</span></label>
-      <input type="text" id="schoolName" placeholder="예: ○○중학교, ○○고등학교">
+      <input type="text" id="schoolName" value="OO상업고등학교" placeholder="예: ○○중학교, ○○고등학교">
       <div class="field-error" id="err-schoolName">학교 이름을 입력해주세요.</div>
 
       <label class="field-label">학년 <span class="req">*</span></label>
@@ -572,6 +572,16 @@
         <label class="field-label">피해 장소</label>
         <input type="text" id="victimPlace" placeholder="예: 교실, 복도, 화장실, 온라인 등">
 
+        <label class="field-label">피해를 겪은 시기 <span class="req">*</span></label>
+        <select id="victimWhen">
+          <option value="">선택해주세요</option>
+          <option value="2025년 2학기">2025년 2학기</option>
+          <option value="2025년 겨울방학">2025년 겨울방학</option>
+          <option value="2026년 1학기">2026년 1학기</option>
+          <option value="여러 시기에 걸쳐 지속됨">여러 시기에 걸쳐 지속됨</option>
+          <option value="정확한 시기 기억 안 남">정확한 시기 기억 안 남</option>
+        </select>
+
         <label class="field-label">현재 사안 처리 상태 <span class="req">*</span></label>
         <div class="option-group">
           <div class="option-item"><input type="radio" name="victimStatus" id="vs1" value="해결됨"><label for="vs1"><span class="dot"></span>해결되었습니다</label></div>
@@ -626,6 +636,16 @@
 
         <label class="field-label">피해자 정보 (알고 있다면)</label>
         <input type="text" id="bullyVictim" placeholder="학교, 학년, 이름 또는 특징">
+
+        <label class="field-label">가해가 있었던 시기 <span class="req">*</span></label>
+        <select id="bullyWhen">
+          <option value="">선택해주세요</option>
+          <option value="2025년 2학기">2025년 2학기</option>
+          <option value="2025년 겨울방학">2025년 겨울방학</option>
+          <option value="2026년 1학기">2026년 1학기</option>
+          <option value="여러 시기에 걸쳐 지속됨">여러 시기에 걸쳐 지속됨</option>
+          <option value="정확한 시기 기억 안 남">정확한 시기 기억 안 남</option>
+        </select>
 
         <label class="field-label">현재 사안 처리 상태 <span class="req">*</span></label>
         <div class="option-group">
@@ -686,6 +706,16 @@
 
         <label class="field-label">목격 장소</label>
         <input type="text" id="witnessPlace" placeholder="예: 교실, 운동장, 온라인 등">
+
+        <label class="field-label">목격한 시기 <span class="req">*</span></label>
+        <select id="witnessWhen">
+          <option value="">선택해주세요</option>
+          <option value="2025년 2학기">2025년 2학기</option>
+          <option value="2025년 겨울방학">2025년 겨울방학</option>
+          <option value="2026년 1학기">2026년 1학기</option>
+          <option value="여러 시기에 걸쳐 지속됨">여러 시기에 걸쳐 지속됨</option>
+          <option value="정확한 시기 기억 안 남">정확한 시기 기억 안 남</option>
+        </select>
 
         <label class="field-label">목격 후 어떻게 했나요? <span class="req">*</span></label>
         <div class="option-group">
@@ -765,7 +795,7 @@
 <script>
 // ===== CONFIG =====
 // 아래 URL을 본인의 Google Apps Script 웹앱 URL로 교체하세요
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrFz0IBPmHHFV7EM81QtC1op7Dcq9O4sIrml_l8UF6GE7uEs-nwZlo07mOS7DW7mwIkw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx91xEqHIZI8i4A_m4r62eWj4XZH62NL3P3MUC7WGUa9yNIVIG6a3AHEm85GqSd2rhm_A/exec';
 
 let currentStep = 1;
 const totalSteps = 5;
@@ -850,6 +880,10 @@ function validateStep(step) {
         alert('피해 폭력 유형을 1개 이상 선택해주세요.');
         return false;
       }
+      if (!document.getElementById('victimWhen').value) {
+        alert('피해를 겪은 시기를 선택해주세요.');
+        return false;
+      }
       if (!getRadioVal('victimStatus')) {
         alert('피해 사안 처리 상태를 선택해주세요.');
         return false;
@@ -869,6 +903,10 @@ function validateStep(step) {
         alert('가해 유형을 1개 이상 선택해주세요.');
         return false;
       }
+      if (!document.getElementById('bullyWhen').value) {
+        alert('가해가 있었던 시기를 선택해주세요.');
+        return false;
+      }
       if (!getRadioVal('bullyStatus')) {
         alert('가해 사안 처리 상태를 선택해주세요.');
         return false;
@@ -886,6 +924,10 @@ function validateStep(step) {
     if (witnessYN === '예') {
       if (!getCheckedCount('wt', 7)) {
         alert('목격한 폭력 유형을 1개 이상 선택해주세요.');
+        return false;
+      }
+      if (!document.getElementById('witnessWhen').value) {
+        alert('목격한 시기를 선택해주세요.');
         return false;
       }
       if (!getRadioVal('witnessAction')) {
@@ -934,6 +976,7 @@ function collectData() {
     victimTypes: victimYN === '예' ? getCheckboxVals('vt', 7) : '',
     victimPerp: victimYN === '예' ? document.getElementById('victimPerp').value.trim() : '',
     victimPlace: victimYN === '예' ? document.getElementById('victimPlace').value.trim() : '',
+    victimWhen: victimYN === '예' ? document.getElementById('victimWhen').value : '',
     victimStatus: victimYN === '예' ? getRadioVal('victimStatus') : '',
     victimWhyNot: victimYN === '예' ? document.getElementById('victimWhyNot').value.trim() : '',
     victimExtra: victimYN === '예' ? document.getElementById('victimExtra').value.trim() : '',
@@ -941,6 +984,7 @@ function collectData() {
     bullyYN,
     bullyTypes: bullyYN === '예' ? getCheckboxVals('bt', 7) : '',
     bullyVictim: bullyYN === '예' ? document.getElementById('bullyVictim').value.trim() : '',
+    bullyWhen: bullyYN === '예' ? document.getElementById('bullyWhen').value : '',
     bullyStatus: bullyYN === '예' ? getRadioVal('bullyStatus') : '',
     bullyReason: bullyYN === '예' ? document.getElementById('bullyReason').value.trim() : '',
     bullyExtra: bullyYN === '예' ? document.getElementById('bullyExtra').value.trim() : '',
@@ -950,6 +994,7 @@ function collectData() {
     witnessVictim: witnessYN === '예' ? document.getElementById('witnessVictim').value.trim() : '',
     witnessPerp: witnessYN === '예' ? document.getElementById('witnessPerp').value.trim() : '',
     witnessPlace: witnessYN === '예' ? document.getElementById('witnessPlace').value.trim() : '',
+    witnessWhen: witnessYN === '예' ? document.getElementById('witnessWhen').value : '',
     witnessAction: witnessYN === '예' ? getRadioVal('witnessAction') : '',
     witnessStatus: witnessYN === '예' ? getRadioVal('witnessStatus') : '',
     witnessExtra: witnessYN === '예' ? document.getElementById('witnessExtra').value.trim() : ''
@@ -972,6 +1017,7 @@ function buildReview() {
   html += '<strong>🔴 피해 경험:</strong> ' + (d.victimYN || '미응답');
   if (d.victimYN === '예') {
     html += '<br>유형: ' + (d.victimTypes || '미선택');
+    html += '<br>시기: ' + (d.victimWhen || '미선택');
     html += '<br>처리 상태: ' + (d.victimStatus || '미선택');
   }
   html += '</div>';
@@ -980,6 +1026,7 @@ function buildReview() {
   html += '<strong>🟠 가해 경험:</strong> ' + (d.bullyYN || '미응답');
   if (d.bullyYN === '예') {
     html += '<br>유형: ' + (d.bullyTypes || '미선택');
+    html += '<br>시기: ' + (d.bullyWhen || '미선택');
     html += '<br>처리 상태: ' + (d.bullyStatus || '미선택');
   }
   html += '</div>';
@@ -988,6 +1035,7 @@ function buildReview() {
   html += '<strong>🟡 목격 경험:</strong> ' + (d.witnessYN || '미응답');
   if (d.witnessYN === '예') {
     html += '<br>유형: ' + (d.witnessTypes || '미선택');
+    html += '<br>시기: ' + (d.witnessWhen || '미선택');
     html += '<br>목격 후 행동: ' + (d.witnessAction || '미선택');
   }
   html += '</div>';
