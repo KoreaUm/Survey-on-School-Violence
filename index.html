@@ -1,14 +1,11 @@
---- START OF FILE Paste April 05, 2026 - 4:48PM ---
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>학교폭력 실태조사</title>
-<!-- 세련된 폰트 로드: Pretendard(본문) & Gowun Batang(제목) -->
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<!-- Nanum Myeongjo(제목) & Noto Sans KR(본문) -->
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -31,13 +28,12 @@
   * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
-    /* 본문을 Pretendard로 변경하여 더 깔끔하고 가독성 높게 수정 */
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     line-height: 1.7;
-    letter-spacing: -0.01em; /* 자간을 미세하게 조정하여 세련미 추가 */
+    letter-spacing: -0.01em;
   }
 
   /* === HEADER === */
@@ -76,12 +72,26 @@
     50% { transform: scale(1.08); }
   }
   .header h1 {
-    /* 제목을 고운 바탕으로 변경하여 더 신뢰감 있고 고급스럽게 수정 */
-    font-family: 'Gowun Batang', serif;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0px;
     margin-bottom: 8px;
+    line-height: 1.55;
+  }
+  .header h1 .school-name {
+    display: block;
+    font-size: 22px;
+    font-weight: 700;
+    opacity: 0.88;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .header h1 .survey-title {
+    display: block;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
   }
   .header p {
     font-size: 14px;
@@ -187,6 +197,7 @@
   }
 
   .card h2 {
+    font-family: 'Nanum Myeongjo', serif;
     font-size: 21px;
     font-weight: 700;
     margin-bottom: 6px;
@@ -223,7 +234,7 @@
     border: 1.5px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     background: #FAFAF8;
     transition: border-color 0.2s, box-shadow 0.2s;
     margin-bottom: 18px;
@@ -348,7 +359,7 @@
     border-radius: 10px;
     font-size: 15px;
     font-weight: 700;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     cursor: pointer;
     transition: all 0.2s;
   }
@@ -372,7 +383,7 @@
     border-radius: 10px;
     cursor: pointer;
     font-weight: 700;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     transition: all 0.2s;
   }
   .btn-submit:hover { background: #c04830; transform: translateY(-1px); }
@@ -419,7 +430,7 @@
   }
   .complete-screen h2 {
     font-size: 24px;
-    font-family: 'Gowun Batang', serif;
+    font-family: 'Nanum Myeongjo', serif;
     color: var(--primary);
     margin-bottom: 8px;
   }
@@ -474,7 +485,8 @@
   /* === RESPONSIVE === */
   @media (max-width: 480px) {
     .header { padding: 36px 16px 44px; }
-    .header h1 { font-size: 24px; }
+    .header h1 .survey-title { font-size: 24px; }
+    .header h1 .school-name { font-size: 18px; }
     .card { padding: 24px 20px; }
     .btn-row { flex-direction: column-reverse; }
   }
@@ -484,8 +496,10 @@
 
 <div class="header">
   <div class="header-icon">🛡️</div>
-  <h1>충주상업고등학교 
-    학교폭력 실태조사</h1>
+  <h1>
+    <span class="school-name">충주상업고등학교</span>
+    <span class="survey-title">학교폭력 실태조사</span>
+  </h1>
   <p>2025년 2학기 ~ 현재 | 실명 실태조사</p>
   <a class="header-link" href="https://www.instagram.com/ccs_safety/" target="_blank" rel="noopener noreferrer">충주상업고등학교 생활안전부</a>
 </div>
@@ -808,7 +822,6 @@
 
 <script>
 // ===== CONFIG =====
-// 아래 URL을 본인의 Google Apps Script 웹앱 URL로 교체하세요
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx91xEqHIZI8i4A_m4r62eWj4XZH62NL3P3MUC7WGUa9yNIVIG6a3AHEm85GqSd2rhm_A/exec';
 
 let currentStep = 1;
@@ -882,77 +895,37 @@ function validateStep(step) {
 
   if (step === 2) {
     const victimYN = getRadioVal('victim');
-    if (!victimYN) {
-      alert('피해 경험 여부를 선택해주세요.');
-      return false;
-    }
+    if (!victimYN) { alert('피해 경험 여부를 선택해주세요.'); return false; }
     if (victimYN === '예') {
-      if (!getCheckedCount('vt', 7)) {
-        alert('피해 폭력 유형을 1개 이상 선택해주세요.');
-        return false;
-      }
-      if (!document.getElementById('victimWhen').value) {
-        alert('피해를 겪은 시기를 선택해주세요.');
-        return false;
-      }
-      if (!getRadioVal('victimStatus')) {
-        alert('피해 사안 처리 상태를 선택해주세요.');
-        return false;
-      }
+      if (!getCheckedCount('vt', 7)) { alert('피해 폭력 유형을 1개 이상 선택해주세요.'); return false; }
+      if (!document.getElementById('victimWhen').value) { alert('피해를 겪은 시기를 선택해주세요.'); return false; }
+      if (!getRadioVal('victimStatus')) { alert('피해 사안 처리 상태를 선택해주세요.'); return false; }
     }
     return true;
   }
 
   if (step === 3) {
     const bullyYN = getRadioVal('bully');
-    if (!bullyYN) {
-      alert('가해 경험 여부를 선택해주세요.');
-      return false;
-    }
+    if (!bullyYN) { alert('가해 경험 여부를 선택해주세요.'); return false; }
     if (bullyYN === '예') {
-      if (!getCheckedCount('bt', 7)) {
-        alert('가해 유형을 1개 이상 선택해주세요.');
-        return false;
-      }
-      if (!document.getElementById('bullyWhen').value) {
-        alert('가해가 있었던 시기를 선택해주세요.');
-        return false;
-      }
-      if (!getRadioVal('bullyStatus')) {
-        alert('가해 사안 처리 상태를 선택해주세요.');
-        return false;
-      }
+      if (!getCheckedCount('bt', 7)) { alert('가해 유형을 1개 이상 선택해주세요.'); return false; }
+      if (!document.getElementById('bullyWhen').value) { alert('가해가 있었던 시기를 선택해주세요.'); return false; }
+      if (!getRadioVal('bullyStatus')) { alert('가해 사안 처리 상태를 선택해주세요.'); return false; }
     }
     return true;
   }
 
   if (step === 4) {
     const witnessYN = getRadioVal('witness');
-    if (!witnessYN) {
-      alert('목격 경험 여부를 선택해주세요.');
-      return false;
-    }
+    if (!witnessYN) { alert('목격 경험 여부를 선택해주세요.'); return false; }
     if (witnessYN === '예') {
-      if (!getCheckedCount('wt', 7)) {
-        alert('목격한 폭력 유형을 1개 이상 선택해주세요.');
-        return false;
-      }
-      if (!document.getElementById('witnessWhen').value) {
-        alert('목격한 시기를 선택해주세요.');
-        return false;
-      }
-      if (!getRadioVal('witnessAction')) {
-        alert('목격 후 행동을 선택해주세요.');
-        return false;
-      }
+      if (!getCheckedCount('wt', 7)) { alert('목격한 폭력 유형을 1개 이상 선택해주세요.'); return false; }
+      if (!document.getElementById('witnessWhen').value) { alert('목격한 시기를 선택해주세요.'); return false; }
+      if (!getRadioVal('witnessAction')) { alert('목격 후 행동을 선택해주세요.'); return false; }
     }
     return true;
   }
   return true;
-}
-function showErr(id, isErr) {
-  // helper kept for potential future use
-  return !isErr;
 }
 
 // ===== COLLECT DATA =====
@@ -980,7 +953,6 @@ function collectData() {
     studentId: document.getElementById('studentId').value.trim(),
     schoolName: document.getElementById('schoolName').value.trim(),
     gender: getRadioVal('gender'),
-    // 피해
     victimYN,
     victimTypes: victimYN === '예' ? getCheckboxVals('vt', 7) : '',
     victimPerp: victimYN === '예' ? document.getElementById('victimPerp').value.trim() : '',
@@ -989,7 +961,6 @@ function collectData() {
     victimStatus: victimYN === '예' ? getRadioVal('victimStatus') : '',
     victimWhyNot: victimYN === '예' ? document.getElementById('victimWhyNot').value.trim() : '',
     victimExtra: victimYN === '예' ? document.getElementById('victimExtra').value.trim() : '',
-    // 가해
     bullyYN,
     bullyTypes: bullyYN === '예' ? getCheckboxVals('bt', 7) : '',
     bullyVictim: bullyYN === '예' ? document.getElementById('bullyVictim').value.trim() : '',
@@ -997,7 +968,6 @@ function collectData() {
     bullyStatus: bullyYN === '예' ? getRadioVal('bullyStatus') : '',
     bullyReason: bullyYN === '예' ? document.getElementById('bullyReason').value.trim() : '',
     bullyExtra: bullyYN === '예' ? document.getElementById('bullyExtra').value.trim() : '',
-    // 목격
     witnessYN,
     witnessTypes: witnessYN === '예' ? getCheckboxVals('wt', 7) : '',
     witnessVictim: witnessYN === '예' ? document.getElementById('witnessVictim').value.trim() : '',
@@ -1057,7 +1027,7 @@ async function submitForm() {
   const btn = document.getElementById('submitBtn');
   if (!validateStep(4)) return;
   if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-    alert('Google Apps Script URL이 아직 설정되지 않았습니다. index.html의 GOOGLE_SCRIPT_URL 값을 먼저 교체해주세요.');
+    alert('Google Apps Script URL이 아직 설정되지 않았습니다.');
     return;
   }
   btn.disabled = true;
@@ -1066,7 +1036,7 @@ async function submitForm() {
   const data = collectData();
 
   try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
